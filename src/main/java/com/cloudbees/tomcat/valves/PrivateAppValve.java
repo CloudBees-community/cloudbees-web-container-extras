@@ -79,7 +79,7 @@ public class PrivateAppValve extends ValveBase {
     private boolean enabled = true;
     private String secretKey;
     private String seed = PrivateAppValve.class.getName();
-    private AuthenticationEntryPoint authenticationEntryPoint = AuthenticationEntryPoint.BASIC_AUTH;
+    private AuthenticationEntryPoint authenticationEntryPoint = AuthenticationEntryPoint.FORM_AUTH;
     private String realmName = "CloudBees";
     private Pattern ignoredUriRegexp = Pattern.compile("/favicon\\.ico");
 
