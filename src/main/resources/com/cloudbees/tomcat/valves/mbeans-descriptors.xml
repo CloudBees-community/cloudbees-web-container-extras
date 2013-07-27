@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!--
+   Copyright 2010-2013, CloudBees Inc.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<mbeans-descriptors>
+
+    <mbean name="PrivateAppValve"
+           description="Private Application Valve"
+           domain="Catalina"
+           group="Valve"
+           type="com.cloudbees.tomcat.valves.PrivateAppValve">
+
+        <attribute name="asyncSupported"
+                   description="Does this valve support async reporting."
+                   is="true"
+                   type="boolean"/>
+
+        <attribute name="className"
+                   description="Fully qualified class name of the managed object"
+                   type="java.lang.String"
+                   writeable="false"/>
+
+        <attribute name="enabled"
+                   description="Enable Private App Valve"
+                   is="true"
+                   type="boolean"/>
+
+        <attribute name="info"
+                   description="Information about this implementation"
+                   type="java.lang.String"
+                   writeable="false"/>
+
+        <attribute name="stateName"
+                   description="The name of the LifecycleState that this component is currently in"
+                   type="java.lang.String"
+                   writeable="false"/>
+
+
+        <attribute name="authenticationCookieName"
+                   description="The name of the cookie used to persist authentication state"
+                   type="java.lang.String"
+                   writeable="true"/>
+        <attribute name="authenticationHeaderName"
+                   description="The name of the http header used to hold basic authentication if authenticationMode is HTTP_HEADER_AUTH"
+                   type="java.lang.String"
+                   writeable="true"/>
+        <attribute name="authenticationParameterName"
+                   description="The name of the http parameter used to hold se secret if authenticationMode is HTTP_PARAM_AUTH"
+                   type="java.lang.String"
+                   writeable="true"/>
+        <attribute name="authenticationUri"
+                   description="The URI used to for FORM_AUTH"
+                   type="java.lang.String"
+                   writeable="true"/>
+
+        <attribute name="secretKey"
+                   description="The secret key to authenticate"
+                   type="java.lang.String"
+                   writeable="true"/>
+        <attribute name="seed"
+                   description="Seed used to hash the secret key"
+                   type="java.lang.String"
+                   writeable="true"/>
+
+        <attribute name="authenticationEntryPointName"
+                   description="The authentication entry point (FORM_AUTH, BASIC_AUTH, HTTP_PARAM_AUTH or HTTP_HEADER_AUTH)"
+                   type="java.lang.String"
+                   writeable="true"/>
+
+        <attribute name="ignoredUriRegexp"
+                   description="Regular expression to defined the URIs that are not authentication (favicon.ico, ...)"
+                   type="java.lang.String"
+                   writeable="true"/>
+
+        <attribute name="authenticationSuccessCount"
+                   description="Counter of successful authentications"
+                   type="int"
+                   writeable="false"/>
+        <attribute name="authenticationFailureCount"
+                   description="Counter of failed authentications"
+                   type="int"
+                   writeable="false"/>
+
+    </mbean>
+</mbeans-descriptors>
