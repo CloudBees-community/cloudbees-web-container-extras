@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import java.nio.charset.Charset;
 
 /**
- * {@linkplain String} util classes
+ * {@linkplain String} util class
  * @author <a href="mailto:cleclerc@cloudbees.com">Cyrille Le Clerc</a>
  */
 public class Strings2 {

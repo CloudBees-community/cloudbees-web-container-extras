@@ -1,0 +1,1 @@
+Copied from http://svn.apache.org/repos/asf/tomcat/tc7.0.x/tags/TOMCAT_7_0_41/test/org/apache/catalina/startup/
