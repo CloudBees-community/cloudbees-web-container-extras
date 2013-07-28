@@ -137,5 +137,7 @@ The PrivateAppValve should be declared just after the RemoteIpValve if used and 
 
 It may convenient to use form authentication for many human facing applications (`FORM_AUTH`).
 
-Other types of applications involving API / web services apps will probably prefer other authentication mechanisms
-such as `` non mechanism may be convenient
+Other types of applications involving API / web services apps will probably prefer authentication mechanisms
+which allow no interactive-authentication such as `HTTP_PARAM_AUTH`, `HTTP_HEADER_AUTH` or `HTTP_BASIC_AUTH`.
+
+`HTTP_BASIC_AUTH` will cause interferences if the protected application also uses Basic Authentication.
