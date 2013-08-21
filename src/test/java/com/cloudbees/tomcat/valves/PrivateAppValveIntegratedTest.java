@@ -37,14 +37,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -78,6 +82,13 @@ public class PrivateAppValveIntegratedTest extends TomcatBaseTest {
         Tomcat.addServlet(context, "hello-servlet", new HttpServlet() {
             @Override
             protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                System.out.println(req.getRequestURL());
+                IoUtils2.flush(req.getInputStream(), System.out);
+                Enumeration<String> headers = req.getHeaderNames();
+                while(headers.hasMoreElements()) {
+                    String header = headers.nextElement();
+                    System.out.println("   " + header + ": " + req.getHeader(header));
+                }
                 resp.addHeader("x-response", "hello");
                 resp.getWriter().println("Hello world!");
             }
@@ -181,7 +192,6 @@ public class PrivateAppValveIntegratedTest extends TomcatBaseTest {
         }
     }
 
-
     private void authentication_scenario(PrivateAppValve.AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         privateAppValve.setAuthenticationEntryPoint(authenticationEntryPoint);
 
@@ -199,7 +209,7 @@ public class PrivateAppValveIntegratedTest extends TomcatBaseTest {
                     break;
                 case HTTP_HEADER_AUTH:
                     request = new HttpGet("/");
-                    request.addHeader(privateAppValve.getAuthenticationHeaderName(), buildBasicAuthHeader());
+                    request.addHeader(privateAppValve.getAuthenticationHeaderName(), secretKey);
                     break;
                 default:
                     throw new IllegalStateException();
