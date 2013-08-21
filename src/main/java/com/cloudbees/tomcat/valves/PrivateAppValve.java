@@ -29,39 +29,47 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 /**
  * <h2>Form Authentication</h2>
+ * <p>Default form submission URI: {@value #FORM_AUTH_DEFAULT_URI}.</p>
  * <code><pre>
  *    <lt;Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
- *        secretKey="MY_VERY_COMPLEX_SECRET"
+ *        secretKey="MY_VERY_STRONG_SECRET"
  *        authenticationEntryPointName="FORM_AUTH"/>
  * </pre></code>
  * <h2>Basic Authentication</h2>
  * <code><pre>
  *    <lt;Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
- *        secretKey="MY_VERY_COMPLEX_SECRET"
+ *        secretKey="MY_VERY_STRONG_SECRET"
  *        authenticationEntryPointName="BASIC_AUTH"/>
  * </pre></code>
  * <h2>HTTP Parameter Authentication</h2>
+ * <p>Default param name: {@value #HTTP_PARAM_AUTH_DEFAULT_NAME}.</p>
  * <code><pre>
  *    <lt;Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
- *        secretKey="MY_VERY_COMPLEX_SECRET"
+ *        secretKey="MY_VERY_STRONG_SECRET"
  *        authenticationEntryPointName="HTTP_PARAM_AUTH"/>
  * </pre></code>
  * <h2>HTTP Header Authentication</h2>
+ * <p>Default header name: {@value #HTTP_HEADER_AUTH_DEFAULT_NAME}.</p>
  * <code><pre>
  *    <lt;Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
- *        secretKey="MY_VERY_COMPLEX_SECRET"
+ *        secretKey="MY_VERY_STRONG_SECRET"
  *        authenticationEntryPointName="HTTP_HEADER_AUTH"/>
  * </pre></code>
  *
  * @author <a href="mailto:cleclerc@cloudbees.com">Cyrille Le Clerc</a>
  */
 public class PrivateAppValve extends ValveBase {
+    public static final String HTTP_PARAM_AUTH_DEFAULT_NAME = "__cb_auth";
+    public static final String HTTP_HEADER_AUTH_DEFAULT_NAME = "x-cb-auth";
+    public static final String FORM_AUTH_DEFAULT_URI = "/__cb_auth";
+    public static final String AUTH_REALM_DEFAULT_NAME = "CloudBees";
     /**
      * The descriptive information related to this implementation.
      */
@@ -72,15 +80,15 @@ public class PrivateAppValve extends ValveBase {
     private static final Log log = LogFactory.getLog(PrivateAppValve.class);
     private final AtomicInteger authenticationSuccessCount = new AtomicInteger();
     private final AtomicInteger authenticationFailureCount = new AtomicInteger();
-    private String authenticationParameterName = "__cb_auth";
+    private String authenticationParameterName = HTTP_PARAM_AUTH_DEFAULT_NAME;
     private String authenticationCookieName = "__cb_auth";
-    private String authenticationHeaderName = "__cb_auth";
-    private String authenticationUri = "/__cb_auth";
+    private String authenticationHeaderName = HTTP_HEADER_AUTH_DEFAULT_NAME;
+    private String authenticationUri = FORM_AUTH_DEFAULT_URI;
     private boolean enabled = true;
     private String secretKey;
     private String seed = PrivateAppValve.class.getName();
     private AuthenticationEntryPoint authenticationEntryPoint = AuthenticationEntryPoint.FORM_AUTH;
-    private String realmName = "CloudBees";
+    private String realmName = AUTH_REALM_DEFAULT_NAME;
     private Pattern ignoredUriRegexp = Pattern.compile("/favicon\\.ico");
 
     public PrivateAppValve() {
@@ -440,7 +448,11 @@ public class PrivateAppValve extends ValveBase {
     }
 
     public void setAuthenticationEntryPointName(String authenticationEntryPoint) {
-        this.authenticationEntryPoint = AuthenticationEntryPoint.valueOf(authenticationEntryPoint);
+        try {
+            this.authenticationEntryPoint = AuthenticationEntryPoint.valueOf(authenticationEntryPoint);
+        } catch (RuntimeException e) {
+            new IllegalArgumentException("Unsupported authenticationEntryPoint '" + authenticationEntryPoint + "', not one of " + Arrays.asList(AuthenticationEntryPoint.values()), e);
+        }
     }
 
     public String getAuthenticationHeaderName() {
