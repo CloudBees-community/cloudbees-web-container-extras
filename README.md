@@ -7,12 +7,12 @@ CloudBees add-ons for web containers.
 
 ### Valve Configuration
 
- * `secretKey`: the secret key used to authenticate users. **WARNING**: this secret key must be complex to not be guessed! **Mandatory**
- * `authenticationEntryPoint`: type of authentication (`FORM_AUTH`, `BASIC_AUTH`, `HTTP_PARAM_AUTH` or `HTTP_HEADER_AUTH`)
- * `authenticationParameterName`: named of the HTTP parameter used to pass the secret key when using `HTTP_PARAM_AUTH`. Optional, default `__cb_auth`.
- * `authenticationHeaderName`: named of the HTTP header to pass the secret key when using `HTTP_HEADER_AUTH`. Optional, default `__cb_auth`.
+ * `secretKey`: the secret key used to authenticate users. **WARNING**: this secret key must be strong to not be guessed! **Mandatory**
+ * `authenticationEntryPointName`: type of authentication (`FORM_AUTH`, `BASIC_AUTH`, `HTTP_PARAM_AUTH` or `HTTP_HEADER_AUTH`)
+ * `authenticationParameterName`: name of the HTTP parameter used to pass the secret key when using `HTTP_PARAM_AUTH`. Optional, default `__cb_auth`.
+ * `authenticationHeaderName`: name of the HTTP header to pass the secret key when using `HTTP_HEADER_AUTH`. Optional, default `x-cb-auth`.
  * `authenticationUri`: URI used to submit the authentication form when using `FORM_AUTH`. Optional, default `/__cb_auth`.
- * `authenticationCookieName`: named of the HTTP cookie in which is persisted the successful authentication. Optional, default `__cb_auth`.
+ * `authenticationCookieName`: name of the HTTP cookie in which is persisted the successful authentication. Optional, default `__cb_auth`.
  * `enabled`: enable/disable flag. Optional, default `true`
  * `realmName`: name of the realm used in authentication messages. Optional, default `CloudBees`
  * `ignoredUriRegexp`: regexp of URIs to ignore when checking for authentication. Optional, default `/favicon\.ico`
@@ -25,6 +25,16 @@ CloudBees add-ons for web containers.
    <Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
       secretKey="cloudbees-super-secret-key"
       authenticationEntryPointName="FORM_AUTH" />
+```
+
+### Basic Auth Based Authentication
+
+#### Basic Configuration
+
+```xml
+   <Valve className="com.cloudbees.tomcat.valves.PrivateAppValve"
+      secretKey="cloudbees-super-secret-key"
+      authenticationEntryPointName="BASIC_AUTH" />
 ```
 
 ### HTTP Header Based Authentication
@@ -138,6 +148,6 @@ The PrivateAppValve should be declared just after the RemoteIpValve if used and 
 It may convenient to use form authentication for many human facing applications (`FORM_AUTH`).
 
 Other types of applications involving API / web services apps will probably prefer authentication mechanisms
-which allow no interactive-authentication such as `HTTP_PARAM_AUTH`, `HTTP_HEADER_AUTH` or `HTTP_BASIC_AUTH`.
+which allow no interactive-authentication such as `HTTP_PARAM_AUTH`, `HTTP_HEADER_AUTH` or `BASIC_AUTH`.
 
-`HTTP_BASIC_AUTH` will cause interferences if the protected application also uses Basic Authentication.
+`BASIC_AUTH` will cause interferences if the protected application also uses Basic Authentication.
