@@ -78,10 +78,11 @@ public class PrivateAppValve extends ValveBase {
      * Logger
      */
     private static final Log log = LogFactory.getLog(PrivateAppValve.class);
+    public static final String AUTH_COOKIE_DEFAULT_NAME = "__cb_auth";
     private final AtomicInteger authenticationSuccessCount = new AtomicInteger();
     private final AtomicInteger authenticationFailureCount = new AtomicInteger();
     private String authenticationParameterName = HTTP_PARAM_AUTH_DEFAULT_NAME;
-    private String authenticationCookieName = "__cb_auth";
+    private String authenticationCookieName = AUTH_COOKIE_DEFAULT_NAME;
     private String authenticationHeaderName = HTTP_HEADER_AUTH_DEFAULT_NAME;
     private String authenticationUri = FORM_AUTH_DEFAULT_URI;
     private boolean enabled = true;
