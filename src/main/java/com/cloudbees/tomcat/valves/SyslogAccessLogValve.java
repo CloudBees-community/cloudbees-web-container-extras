@@ -15,16 +15,14 @@
  */
 package com.cloudbees.tomcat.valves;
 
-import com.cloudbees.syslog.SyslogFacility;
-import com.cloudbees.syslog.SyslogMessage;
-import com.cloudbees.syslog.SyslogMessageUdpSender;
-import com.cloudbees.syslog.SyslogSeverity;
+import com.cloudbees.syslog.*;
 import org.apache.catalina.AccessLog;
 import org.apache.catalina.LifecycleException;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,13 +33,17 @@ import java.util.concurrent.TimeUnit;
 public class SyslogAccessLogValve extends AccessLogValveBase implements AccessLog {
 
     private static final Log log = LogFactory.getLog(SyslogAccessLogValve.class);
-
     private SyslogMessageUdpSender messageSender = new SyslogMessageUdpSender();
 
     @Override
     protected synchronized void startInternal() throws LifecycleException {
         super.startInternal();
-        log.info("SyslogAccessLogValve configured to send access logs to the syslog server " + messageSender.getHostname() + ":" + messageSender.getPort());
+        log.info("SyslogAccessLogValve configured to send access logs:" +
+                " syslogServer=" + messageSender.getSyslogServerHostname() + ":" + messageSender.getSyslogServerPort() +
+                ", appName=" + messageSender.getDefaultAppName() +
+                ", hostname=" + messageSender.getDefaultMessageHostname() +
+                ", facility=" + messageSender.getDefaultFacility() +
+                ", severity=" + messageSender.getDefaultSeverity());
     }
 
     @Override
@@ -51,6 +53,12 @@ public class SyslogAccessLogValve extends AccessLogValveBase implements AccessLo
         } catch (IOException e) {
             log.error("Exception sending Syslog message", e);
         }
+    }
+
+    @Override
+    public void backgroundProcess() {
+        super.backgroundProcess();
+        messageSender.backgroundProcess();
     }
 
     public void sendMessage(SyslogMessage message) throws IOException {
@@ -89,16 +97,20 @@ public class SyslogAccessLogValve extends AccessLogValveBase implements AccessLo
         messageSender.setDefaultSeverity(SyslogSeverity.fromLabel(severity));
     }
 
-    public String getHostName() {
-        return messageSender.getDefaultHostName();
+    public String getHostname() {
+        return messageSender.getDefaultMessageHostname();
+    }
+
+    public void setHostname(String messageHostname) {
+        messageSender.setDefaultMessageHostName(messageHostname);
     }
 
     public int getSyslogServerPort() {
-        return messageSender.getPort();
+        return messageSender.getSyslogServerPort();
     }
 
     public void setSyslogServerPort(int syslogServerPort) {
-        messageSender.setPort(syslogServerPort);
+        messageSender.setSyslogServerPort(syslogServerPort);
     }
 
     public String getFacility() {
@@ -110,14 +122,19 @@ public class SyslogAccessLogValve extends AccessLogValveBase implements AccessLo
     }
 
     public String getSyslogServerHostname() {
-        return messageSender.getHostname();
+        return messageSender.getSyslogServerHostname();
     }
 
-    public void setSyslogServerHostname(String syslogServerHostname) {
-        messageSender.setHostname(syslogServerHostname);
+    public void setSyslogServerHostname(String syslogServerHostname) throws UnknownHostException {
+        messageSender.setSyslogServerHostname(syslogServerHostname);
     }
 
-    public void setSyslogMessageHostname(String messageHostname) {
-        messageSender.setDefaultMessageHostName(messageHostname);
+    public String getSyslogMessageFormat() {
+        SyslogMessageFormat syslogMessageFormat = messageSender.getSyslogMessageFormat();
+        return syslogMessageFormat == null ? null : syslogMessageFormat.toString();
+    }
+
+    public void setSyslogMessageFormat(String syslogMessageFormat) {
+        messageSender.setSyslogMessageFormat(syslogMessageFormat);
     }
 }

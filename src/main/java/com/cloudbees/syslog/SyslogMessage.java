@@ -21,8 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Syslog message as defined in <a href="https://tools.ietf.org/html/rfc5424">RFC 5424 - The Syslog Protocol</a>.
@@ -32,14 +30,16 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SyslogMessage {
     public final static String SP = " ";
     public final static String NILVALUE = "-";
-    protected final static SimpleDateFormat rfc3339DateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US) {
+    protected final static ThreadSafeDateFormat rfc3339DateFormat = new ThreadSafeDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US) {
         {
             setTimeZone(TimeZone.getTimeZone("GMT"));
         }
-    };
-    private final static Lock lock = new ReentrantLock();
-    private static long lastFormattedTimestampTimeInMillis;
-    private static String lastFormattedTimestampValue;
+    });
+    protected final static ThreadSafeDateFormat rfc3164DateFormat = new ThreadSafeDateFormat(new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US) {
+        {
+            setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
+    });
     private SyslogFacility facility;
     private SyslogSeverity severity;
     private Long timestamp;
@@ -48,19 +48,6 @@ public class SyslogMessage {
     private String procId;
     private String msgId;
     private String msg;
-
-    protected static String format(long time) {
-        lock.lock();
-        try {
-            if (time != lastFormattedTimestampTimeInMillis) {
-                lastFormattedTimestampTimeInMillis = time;
-                lastFormattedTimestampValue = rfc3339DateFormat.format(new Date(lastFormattedTimestampTimeInMillis));
-            }
-            return lastFormattedTimestampValue;
-        } finally {
-            lock.unlock();
-        }
-    }
 
     public SyslogFacility getFacility() {
         return facility;
@@ -171,17 +158,26 @@ public class SyslogMessage {
         return this;
     }
 
-    public String toSyslogMessage() {
+    public String toSyslogMessage(SyslogMessageFormat syslogMessageFormat) {
+        switch (syslogMessageFormat) {
+            case RFC_3164:
+                return toRfc3164SyslogMessage();
+            case RRF_5424:
+                return toRfc5424SyslogMessage();
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    public String toRfc5424SyslogMessage() {
 
         int pri = facility.value() + severity.value();
 
-
         String structuredData = NILVALUE;
-
 
         String formattedMessage = "<" + pri + ">" +
                 "1" + SP + // version
-                format(timestamp == null ? System.currentTimeMillis() : timestamp) + SP +
+                rfc3339DateFormat.format(timestamp == null ? System.currentTimeMillis() : timestamp) + SP +
                 (hostname == null ? getLocalhostName() : hostname) + SP +
                 (appName == null ? NILVALUE : appName) + SP +
                 (procId == null ? NILVALUE : String.valueOf(procId)) + SP +
@@ -189,6 +185,23 @@ public class SyslogMessage {
                 structuredData;
         if (msg != null) {
             formattedMessage += SP + msg;
+        }
+        return formattedMessage;
+    }
+
+    /**
+     * http://tools.ietf.org/html/rfc3164
+     */
+    public String toRfc3164SyslogMessage() {
+
+        int pri = facility.value() + severity.value();
+
+        String formattedMessage = "<" + pri + ">" +
+                rfc3164DateFormat.format(timestamp == null ? System.currentTimeMillis() : timestamp) + SP +
+                (hostname == null ? getLocalhostName() : hostname) + SP +
+                (appName == null ? NILVALUE : appName);
+        if (msg != null) {
+            formattedMessage += ": " + msg;
         }
         return formattedMessage;
     }

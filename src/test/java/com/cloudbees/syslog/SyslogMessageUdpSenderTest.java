@@ -29,11 +29,13 @@ public class SyslogMessageUdpSenderTest {
     @Test
     public void send() throws Exception {
         SyslogMessageUdpSender messageSender = new SyslogMessageUdpSender();
+        messageSender.setDefaultMessageHostName("mysecretkey");
         messageSender.setDefaultAppName("myapp");
         messageSender.setDefaultFacility(SyslogFacility.USER);
         messageSender.setDefaultSeverity(SyslogSeverity.INFORMATIONAL);
-        messageSender.setHostname("localhost");
-        messageSender.setPort(37486);
+        // messageSender.setSyslogServerHostname("cloudbees1.papertrailapp.com");
+        messageSender.setSyslogServerHostname("127.0.0.1");
+        messageSender.setSyslogServerPort(18977);
         messageSender.sendMessage("unit test message éèà " + getClass() + " - " + new Timestamp(System.currentTimeMillis()));
     }
 }
