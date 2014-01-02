@@ -58,8 +58,8 @@ public enum SyslogSeverity {
      * Debug: debug-level messages, numerical code 7.
      */
     DEBUG(7, "DEBUG");
-    private final static Map<String, SyslogSeverity> syslogSeverityFromLabel = new HashMap<>();
-    private final static Map<Integer, SyslogSeverity> syslogSeverityFromValue = new HashMap<>();
+    private final static Map<String, SyslogSeverity> syslogSeverityFromLabel = new HashMap<String, SyslogSeverity>();
+    private final static Map<Integer, SyslogSeverity> syslogSeverityFromValue = new HashMap<Integer, SyslogSeverity>();
 
     static {
         for (SyslogSeverity syslogSeverity : SyslogSeverity.values()) {

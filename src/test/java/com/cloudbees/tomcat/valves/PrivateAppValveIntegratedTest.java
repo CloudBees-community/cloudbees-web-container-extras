@@ -164,7 +164,7 @@ public class PrivateAppValveIntegratedTest extends TomcatBaseTest {
         {
             // AUTHENTICATION REQUEST
             HttpPost request = new HttpPost(privateAppValve.getAuthenticationUri());
-            List<NameValuePair> nvps = new ArrayList<>();
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("username", accessKey));
             nvps.add(new BasicNameValuePair("password", secretKey));
             request.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));

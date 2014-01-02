@@ -125,8 +125,8 @@ public enum SyslogFacility {
      * reserved for local use, numerical code 23.
      */
     LOCAL7(23 << 3, "LOCAL7");
-    private final static Map<String, SyslogFacility> syslogFacilityFromLabel = new HashMap<>();
-    private final static Map<Integer, SyslogFacility> syslogFacilityFromValue = new HashMap<>();
+    private final static Map<String, SyslogFacility> syslogFacilityFromLabel = new HashMap<String, SyslogFacility>();
+    private final static Map<Integer, SyslogFacility> syslogFacilityFromValue = new HashMap<Integer, SyslogFacility>();
 
     static {
         for (SyslogFacility syslogFacility : SyslogFacility.values()) {

@@ -53,12 +53,12 @@ public class SyslogMessageUdpSender {
 
     public SyslogMessageUdpSender() {
         try {
-            syslogServerHostname = new AtomicReference<>(InetAddress.getByName(DEFAULT_SYSLOG_HOST));
+            syslogServerHostname = new AtomicReference<InetAddress>(InetAddress.getByName(DEFAULT_SYSLOG_HOST));
         } catch (UnknownHostException e) {
             throw new IllegalStateException("Exception loading default syslogServerHostname '" + DEFAULT_SYSLOG_HOST + "'", e);
         }
         try {
-            datagramSocket = new AtomicReference<>(new DatagramSocket());
+            datagramSocket = new AtomicReference<DatagramSocket>(new DatagramSocket());
         } catch (SocketException e) {
             throw new IllegalStateException("Exception initializing datagramSocket", e);
         }
@@ -79,7 +79,10 @@ public class SyslogMessageUdpSender {
 
             DatagramPacket packet = new DatagramPacket(bytes, bytes.length, syslogServerHostname.get(), syslogServerPort);
             datagramSocket.get().send(packet);
-        } catch (IOException | RuntimeException e) {
+        } catch (IOException e) {
+            sendErrorCounter.incrementAndGet();
+            throw e;
+        } catch (RuntimeException e) {
             sendErrorCounter.incrementAndGet();
             throw e;
         } finally {
