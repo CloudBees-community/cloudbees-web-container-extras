@@ -18,8 +18,6 @@ package com.cloudbees.tomcat.valves;
 import org.junit.Before;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * @author <a href="mailto:cleclerc@cloudbees.com">Cyrille Le Clerc</a>
