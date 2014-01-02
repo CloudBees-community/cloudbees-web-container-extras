@@ -28,6 +28,8 @@ import java.util.Map;
 
 /**
  * Dump the JNDI context of the server/context in the logs.
+ * <p/>
+ * <strong>WARNING: this valve does NOT work with Tomcat 8</strong>
  *
  * @author <a href="mailto:cleclerc@cloudbees.com">Cyrille Le Clerc</a>
  */
@@ -52,7 +54,7 @@ public class JndiContextDumperListener implements LifecycleListener {
 
     @Override
     public void lifecycleEvent(LifecycleEvent event) {
-        if (!Lifecycle.AFTER_START_EVENT.equals(event.getType())) {
+        if (!Lifecycle.BEFORE_START_EVENT.equals(event.getType())) {
             return;
         }
 
