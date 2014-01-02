@@ -17,6 +17,7 @@ package com.cloudbees.tomcat.valves;
 
 import org.junit.Before;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -27,9 +28,17 @@ public abstract class TomcatBaseTest extends org.apache.catalina.startup.TomcatB
     @Before
     @Override
     public void setUp() throws Exception {
-        Path tomcatTempDir = Files.createTempDirectory("tomcat");
-        System.setProperty("tomcat.test.temp", tomcatTempDir.resolve("tmp").toFile().getAbsolutePath());
-        System.setProperty("tomcat.test.tomcatbuild", tomcatTempDir.resolve("build").toFile().getAbsolutePath());
+        File tempDir = File.createTempFile("tomcat", "test");
+        boolean deleted = tempDir.delete();
+        if (!deleted) {
+            throw new IllegalStateException("TMP file " + tempDir + " could not be deleted");
+        }
+        boolean created = tempDir.mkdirs();
+        if (!created) {
+            throw new IllegalStateException("TMP dir " + tempDir + " could not be created");
+        }
+        System.setProperty("tomcat.test.temp", new File(tempDir, "tmp").getAbsolutePath());
+        System.setProperty("tomcat.test.tomcatbuild", new File(tempDir, "build").getAbsolutePath());
         super.setUp();
     }
 }
