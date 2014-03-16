@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.cloudbees</groupId>
         <artifactId>cloudbees-oss-parent</artifactId>
-        <version>2</version>
+        <version>4</version>
     </parent>
 
     <artifactId>cloudbees-web-container-extras</artifactId>
@@ -135,11 +135,6 @@
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
             </plugin>
         </plugins>
     </build>
