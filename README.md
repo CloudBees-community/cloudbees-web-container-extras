@@ -2,6 +2,7 @@
 
 CloudBees add-ons for web containers.
 
+# Tomcat
 
 ## PrivateAppValve
 
@@ -151,3 +152,10 @@ Other types of applications involving API / web services apps will probably pref
 which allow no interactive-authentication such as `HTTP_PARAM_AUTH`, `HTTP_HEADER_AUTH` or `BASIC_AUTH`.
 
 `BASIC_AUTH` will cause interferences if the protected application also uses Basic Authentication.
+
+
+# Wildfly
+
+Wildfly currently do not support Global Undertow handlers.
+See [Global valve-like construction in Wildfly](https://community.jboss.org/thread/237073)
+
