@@ -24,7 +24,7 @@
 
     <artifactId>cloudbees-web-container-extras</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>1.0.7</version>
 
     <name>cloudbees-web-container-extras</name>
     <description>Web Container Extras (valves, JNDI helpers, ...)</description>
@@ -53,7 +53,8 @@
         <developerConnection>scm:git:git@github.com:CloudBees-community/cloudbees-web-container-extras.git
         </developerConnection>
         <url>https://github.com/CloudBees-community/cloudbees-web-container-extras</url>
-    </scm>
+      <tag>cloudbees-web-container-extras-1.0.7</tag>
+  </scm>
     <dependencies>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
